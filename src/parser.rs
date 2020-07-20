@@ -2,10 +2,14 @@ use std::fs;
 use std::str::Lines;
 use bit_set::BitSet;
 
-pub fn form_set(nums: &str, nbits: usize) -> Option<BitSet> {
+fn form_set(nums: &str, nbits: usize) -> Option<BitSet> {
     let mut set: BitSet = BitSet::with_capacity(nbits);
 
     for element in nums.trim().split(" ") {
+        if element.is_empty() {
+            continue;
+        }
+
         let element_num: usize = match element.parse() {
             Ok(num) => num,
             Err(_) => {
@@ -19,7 +23,7 @@ pub fn form_set(nums: &str, nbits: usize) -> Option<BitSet> {
     Some(set)
 }
 
-pub fn get_sets(filename: &str) -> Result<Vec<BitSet>, &'static str> {
+pub fn get_sets(filename: &str) -> Result<(Vec<BitSet>, usize), &'static str> {
     // Read the contents of the file into a single string
     let contents: String = match fs::read_to_string(filename) {
         Ok(s) => s,
@@ -61,5 +65,5 @@ pub fn get_sets(filename: &str) -> Result<Vec<BitSet>, &'static str> {
         }
     }
 
-    Ok(sets)
+    Ok((sets, n))
 }
