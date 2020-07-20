@@ -1,8 +1,10 @@
+mod backtrack;
 mod parser;
 
+use backtrack::Backtracker;
 use bit_set::BitSet;
 
-fn remove_subsets(sets: Vec<BitSet>) -> Vec<BitSet> {
+fn remove_subsets(sets: &Vec<BitSet>) -> Vec<BitSet> {
     let num_sets: usize = sets.len();
     let mut new_sets: Vec<BitSet> = Vec::new();
 
@@ -51,7 +53,7 @@ fn find_essential_sets(sets: &Vec<BitSet>) -> Vec<bool> {
 
 pub fn run(filename: &str) -> Result<(), &'static str> {
     let (mut sets, n): (Vec<BitSet>, usize) = parser::get_sets(filename)?;
-    sets = remove_subsets(sets);
+    sets = remove_subsets(&sets);
 
     // Sort the sets so the bigger sets come first
     sets.sort_unstable_by(|a, b| a.len().cmp(&b.len()).reverse());
@@ -59,6 +61,12 @@ pub fn run(filename: &str) -> Result<(), &'static str> {
 
     let mut a: Vec<bool> = Vec::new();
     a.resize(sets.len() + 1, false);
+
+    let mut bt: Backtracker = Backtracker::new(sets, essential, n);
+    bt.backtrack(&mut a, 0);
+
+    println!("{}", bt.repr);
+    println!("{} subsets", bt.max);
 
     Ok(())
 }

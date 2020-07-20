@@ -17,7 +17,7 @@ fn form_set(nums: &str, nbits: usize) -> Option<BitSet> {
             }
         };
 
-        set.insert(element_num);
+        set.insert(element_num - 1);
     }
 
     Some(set)
